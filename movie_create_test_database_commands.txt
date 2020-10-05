@@ -1,0 +1,8 @@
+postgres@ravi-VirtualBox:~$ pg_dump -h localhost -U postgres movieblitz > database_dump_26Sep1525
+Password: 
+postgres@ravi-VirtualBox:~$ ls
+10  12	database_dump_26Sep1525
+postgres@ravi-VirtualBox:~$ pwd
+/var/lib/postgresql
+postgres@ravi-VirtualBox:~$ createdb movie_test
+postgres@ravi-VirtualBox:~$ psql movie_test < database_dump_26Sep1525 

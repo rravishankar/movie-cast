@@ -1,0 +1,258 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.14 (Ubuntu 10.14-1.pgdg18.04+1)
+-- Dumped by pg_dump version 12.4 (Ubuntu 12.4-1.pgdg18.04+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+--
+-- Name: artists; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.artists (
+    id integer NOT NULL,
+    name text NOT NULL,
+    age integer NOT NULL,
+    gender text NOT NULL
+);
+
+
+ALTER TABLE public.artists OWNER TO postgres;
+
+--
+-- Name: artists_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.artists_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.artists_id_seq OWNER TO postgres;
+
+--
+-- Name: artists_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.artists_id_seq OWNED BY public.artists.id;
+
+
+--
+-- Name: moviecast; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.moviecast (
+    id integer NOT NULL,
+    artist_id integer,
+    movie_id integer
+);
+
+
+ALTER TABLE public.moviecast OWNER TO postgres;
+
+--
+-- Name: movie_cast_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.movie_cast_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.movie_cast_id_seq OWNER TO postgres;
+
+--
+-- Name: movie_cast_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.movie_cast_id_seq OWNED BY public.moviecast.id;
+
+
+--
+-- Name: movies; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.movies (
+    id integer NOT NULL,
+    title text NOT NULL,
+    release_date date NOT NULL
+);
+
+
+ALTER TABLE public.movies OWNER TO postgres;
+
+--
+-- Name: movies_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.movies_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.movies_id_seq OWNER TO postgres;
+
+--
+-- Name: movies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.movies_id_seq OWNED BY public.movies.id;
+
+
+--
+-- Name: artists id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.artists ALTER COLUMN id SET DEFAULT nextval('public.artists_id_seq'::regclass);
+
+
+--
+-- Name: moviecast id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.moviecast ALTER COLUMN id SET DEFAULT nextval('public.movie_cast_id_seq'::regclass);
+
+
+--
+-- Name: movies id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.movies ALTER COLUMN id SET DEFAULT nextval('public.movies_id_seq'::regclass);
+
+
+--
+-- Data for Name: artists; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.artists (id, name, age, gender) FROM stdin;
+1	Amitabh	73	Male
+2	Aamir	55	Male  
+3	Jugnu	35	Female
+4	Hema	70	Female
+9	Abhishek	33	Male
+10	Abhishek	33	Male
+11	Abhishek	33	Male
+13	Ginger	33	Male
+\.
+
+
+--
+-- Data for Name: moviecast; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.moviecast (id, artist_id, movie_id) FROM stdin;
+1	1	1
+2	2	1
+3	2	4
+\.
+
+
+--
+-- Data for Name: movies; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.movies (id, title, release_date) FROM stdin;
+1	Great Escape	1978-02-05
+2	The Scape	1979-04-05
+3	Right	1979-04-05
+4	Superman	1988-01-02
+27	GCMail	1999-06-08
+28	CalCMail	1999-06-08
+29	GelCMail	1999-06-08
+30	GelCCCMail	1999-06-08
+32	Jojo	1999-06-08
+33	Jojo11	1999-06-08
+35	Best	2010-02-02
+\.
+
+
+--
+-- Name: artists_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.artists_id_seq', 13, true);
+
+
+--
+-- Name: movie_cast_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.movie_cast_id_seq', 22, true);
+
+
+--
+-- Name: movies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.movies_id_seq', 36, true);
+
+
+--
+-- Name: artists artists_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.artists
+    ADD CONSTRAINT artists_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: moviecast moviecast_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.moviecast
+    ADD CONSTRAINT moviecast_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: movies movies_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.movies
+    ADD CONSTRAINT movies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: moviecast artist_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.moviecast
+    ADD CONSTRAINT artist_id FOREIGN KEY (artist_id) REFERENCES public.artists(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: moviecast movie_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.moviecast
+    ADD CONSTRAINT movie_id FOREIGN KEY (movie_id) REFERENCES public.movies(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
