@@ -37,6 +37,8 @@ def setup_db(app, database_path=database_path):
         app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     else:
         prod_db_uri = os.environ.get("DATABASE_URI")
+        #IMP Make sure the following lines is commented out
+        # print("prod_db_uri", prod_db_uri)
         app.config["SQLALCHEMY_DATABASE_URI"] = prod_db_uri
     db.app = app
     db.init_app(app)
