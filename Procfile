@@ -1,1 +1,1 @@
-web: gunicorn -b :$PORT app:app
+web: gunicorn -b :$PORT_MOVIE_APP app:app
