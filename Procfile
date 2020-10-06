@@ -1,1 +1,1 @@
-web: gunicorn -b :$PORTMOVIE_APP app:app
+web: gunicorn -b :$PRTX_MOVIE_APP app:app
