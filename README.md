@@ -8,7 +8,7 @@ The idea behind this application is helping the movie industry folks - casting a
 - Updating
 - Making a combination of actors and movies we call it "Moviecast". These Moviecasts  are open for viewing for everyone (need no authorization for viewing a Moviecast, but needs certain privileges for making such a combination).
 
-The following sections describe the roles, the associated permissions/privileges and the details of the API's & later also have a note regarding the environment variables, testing the app locally & remotely on Heroku. The application uses Auth0 based authentication. The following sections are mainly for developers to understand the usage of the API
+The following sections describe the roles, the associated permissions/privileges and the details of the API's & later also have a note regarding the running the app, testing the app locally & remotely on Heroku (have scripts for both). The application uses Auth0 based authentication. 
 
 
 
@@ -875,13 +875,21 @@ curl -d '{"name":"Abhishek","age":"33", "gender":"Male"}' -H "Content-Type: appl
 
 
 
-#### Notes for running the app locally
+### Notes for running the app
 
-The file setup.sh mainly contains values like Auth0 parameters, JWT keys, logging level, deployment mode (DEPLOY_MODE) which decides whether the app runs in dev mode (local postgres database) OR uses the remote Heroku database among others.
+The file setup.sh contains environment variables which are values for Auth0 parameters, JWT keys, logging level, deployment mode (DEPLOY_MODE) which decides whether the app runs in dev mode (local postgres database) OR uses the remote Heroku database among others.
+
+For getting the locally hosted app to use the local database, set the DEPLOY_MODE environment variable to "dev" and for remote database use "prod". Currently it's set to "dev", but the Heroku hosted version has it as "prod".
 
 
 
 ### Tests
 
-The tests to make sure everything is in order are in the files test_movies.py (for locally hosted setup) & test_movies_heroku.py (for Heroku hosted setup) 
+The tests make sure that everything is in order. The two tests for testing the app locally and remotely are in the files test_movies.py (for locally hosted setup) & test_movies_heroku.py (for Heroku hosted setup) 
+
+ **User needs to run command "source setup.sh" (on Linux. If on some other OS, make sure environment variables are set according to this file)  before** 
+
+#1 running the server (i.e.  gunicorn app:app) 
+
+#2  running the tests either locally or on Heroku. that is before running the test_movies_heroku.py and test
 
