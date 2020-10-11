@@ -127,9 +127,8 @@ class MovieTestCase(unittest.TestCase):
 
     def test_404_update_movie_not_existing(self):
         global inserted_movie_id
-        self.test_add_movie()
-        print("test_404_update_movie_not_existing: Got inserted movie id: {}".format(inserted_movie_id))
         self.test_delete_movie()
+        print("test_404_update_movie_not_existing: Got inserted & deleted movie id: {}".format(inserted_movie_id))
         resp = self.client().patch('/movies/' + str(inserted_movie_id), data='{"title":"History"}', content_type='application/json', headers=auth_header)
         data = json.loads(resp.data)
         self.assertEqual(resp.status_code, 404)

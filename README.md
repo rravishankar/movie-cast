@@ -1,36 +1,52 @@
+# **Movies and More :)**
+
+The idea behind this application is helping the movie industry folks - casting assistants, casting directors and executive producers to manage their database of actors and movies. It includes the following for actors & movies:
+
+- Getting a list 
+- Adding 
+- Deleting
+- Updating
+- Making a combination of actors and movies we call it "Moviecast". These Moviecasts  are open for viewing for everyone (need no authorization for viewing a Moviecast, but needs certain privileges for making such a combination).
+
+The following sections describe the roles, the associated permissions/privileges and the details of the API's & later also have a note regarding the environment variables, testing the app locally & remotely on Heroku. The application uses Auth0 based authentication. The following sections are mainly for developers to understand the usage of the API
+
+
+
 #### Permissions and Roles
 
 With ref to the actors and movies we have the following permissions which are self explanatory 
 
 
-###### Permissions
+###### List of Permissions
 
-get:actors
+get:actors > Gets a list of actors (supports pagination)
 
-post:actors
+post:actors > Add an actor
 
-delete:actors
+delete:actors > Delete an actor
 
-update:actors
+update:actors > Update an actor's profile/detail
 
-get:movies
+get:movies > Get a list of movies (supports pagination)
 
-post:movies
+post:movies > Add a movie
 
-delete:movies
+delete:movies > Delete a movie
 
-update:movies
+update:movies > Update a movie profile/detail
 
 
 The following permissions are for adding/deleting  a combination of movie and actors
 
-post:moviecast
+post:moviecast > Adding a combination of movie and actor
 
-delete:moviecast
+delete:moviecast > Deleting the movie-actor combination (Deleting a movie or an actor also deletes the moviecast associated with the movie or an actor)
 
-One can get a list of current movie-cast combinations too. There is no authentication/permission required for getting a list of movie-cast combination - all roles and do it.
+One can get a list of current movie-cast combinations too. There is no authentication/permission required for getting a list of movie-cast combination.
 
-###### Roles and respective permissions:
+###### Roles and permissions:
+
+Every roles has been assigned a set of permissions based on their profile. The permission set is as below.
 
 Casting Assistant:
 
@@ -82,19 +98,32 @@ delete:moviecast
 
 
 
-#### Requests and Responses
+#### API Requests and Responses
 
-Please note that all requests need to be added authentication to the requests - the examples below DO NOT ADD THE AUTHENTICATION HEADER for reasons of breivity. The actual request needs to have the same like the following:
+The API  requests and respective JSON responses are listed out below for all the actions that can be pursued. 
+
+The endpoint for the Heroku hosted API is  https://movie-dig.herokuapp.com/moviecast  and the API works only when appended with appropriate resource names and arguments.
+
+GET requests are paginated with a page size of 5, eventually this API may be enhanced with support to modify the page size within reasonable limits.
+
+Please note that all requests (except for moviecast GET requests) need to be added authentication header - the examples below DO NOT ADD THE AUTHENTICATION HEADER for reasons of brevity. The actual request would do something on the following lines (dummy Linux command prompt entries below):
 
 e.g. : 
 
-
+This sample example adds a combination of a movie and an actor to the system's database.
 
 ---Start of sample request and response---
 
-$ export EXEC_PRODUCER_TOKEN="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtYa29NcnIwMUd6bS1GMHZqZER0USJ9.eyJpc3MiOiJodHRwczovL2NyYWxpbmEtdGVzdC51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDk1NzY2MTEyOTcyMzQ4NDU0NjQiLCJhdWQiOlsibW92aWUiLCJodHRwczovL2NyYWxpbmEtdGVzdC51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjAxNjI5NzM3LCJleHAiOjE2MDE2MzY5MzcsImF6cCI6Ik40MDdTc3FIakV0QW9aSWVYYzRCTmtBdHRhS2lOeVR5Iiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVjYXN0IiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllY2FzdCIsInBvc3Q6bW92aWVzIiwidXBkYXRlOmFjdG9ycyIsInVwZGF0ZTptb3ZpZXMiXX0.nO0r-icZjNLXnh770-v6PBQpDov9Ar6j0wZf5RR5bhgtqb8R7LjjDol5Zjhq2UQvTEI1ExgmZTUwb4qrxtWNQO4vnvtntxG3ys1wnK0DQZpzftwY9XFuKLQXqmwIPlPmfTEoD4zq45QNrUbSmI4TF1YA1bRtHs3ygzdFA0q6CvVmrP5G_H0w_j9Wj5QXQmWqe0OlBijbeoSi5wunbHBLEvewefcPYxA9jN7nhASBmd3UzNQy0qqfFwBUqiVKzwjeOQhDqZ2y1__Q0C6omqgDQgc9ByqwqyGcs8c7_vHpaGFjP9XcnplplaG0zK6fe_U7Rn2pysULe3zRVBtOqQzsQA"
+For trying out on Heroku
 
-$ curl --request POST -d '{"actor_id":3, "movie_id":4}' -H "Content-Type: application/json" http://127.0.0.1:5000/moviecast -H "Authorization: Bearer ${EXEC_PRODUCER_TOKEN}"
+$ curl --request POST -d '{"actor_id":3, "movie_id":4}' -H "Content-Type: application/json" https://movie-dig.herokuapp.com/moviecast -H "Authorization: Bearer <JWT token here>"
+
+OR 
+
+For trying out on localhost
+
+$ curl --request POST -d '{"actor_id":3, "movie_id":4}' -H "Content-Type: application/json" http://127.0.0.1:5000/moviecast -H "Authorization: Bearer <JWT token here>"
+
 {
   "moviecast": [
     {
@@ -110,7 +139,7 @@ $ curl --request POST -d '{"actor_id":3, "movie_id":4}' -H "Content-Type: applic
 
 
 
-The part in the command *-H "Authorization: Bearer ${EXEC_PRODUCER_TOKEN}"* needs to be added to each of the commands as required.
+The part in the command *--H "Authorization: Bearer <JWT token here>"* needs to be appended to each of the commands as required with the appropriate token which has the permission to carry out the activities for that role. Also if you are using the Heroku endpoint you need to substitute "http://127.0.0.1:5000/" in the examples below with  "https://movie-dig.herokuapp.com/"
 
 
 
@@ -174,29 +203,8 @@ The part in the command *-H "Authorization: Bearer ${EXEC_PRODUCER_TOKEN}"* need
     }, 
     "success": true
   }
-  (env) $ curl --request GET 'http://127.0.0.1:5000/actors?page=2'
-  {
-    "actors": {
-      "3": {
-        "age": 35, 
-        "gender": "Female", 
-        "name": "Jugnu"
-      }, 
-      "4": {
-        "age": 70, 
-        "gender": "Female", 
-        "name": "Hema"
-      }, 
-      "13": {
-        "age": 33, 
-        "gender": "Male", 
-        "name": "Ginger"
-      }
-    }, 
-    "success": true
-  }
   
-- Insert an actor
+- Add an actor
 
   Request: 
   curl -d '{"name":"Abhishek","age":"33", "gender":"Male"}' -H "Content-Type: application/json" -X POST 127.0.0.1:5000/actors
@@ -218,9 +226,11 @@ The part in the command *-H "Authorization: Bearer ${EXEC_PRODUCER_TOKEN}"* need
 
   
 
-- Update actor
+- Update actor details
 
   $ curl --request GET 'http://127.0.0.1:5000/actors'
+
+  ID is before actor details
   {
     "actors": {
       "1": {
@@ -321,6 +331,8 @@ The part in the command *-H "Authorization: Bearer ${EXEC_PRODUCER_TOKEN}"* need
 
   
 
+- Delete Actor : See example later in this documentation which also demonstrates the effect of the same on moviecast as well 
+
 - Get all movies
 
   $ curl --request GET 'http://127.0.0.1:5000/movies'
@@ -366,54 +378,8 @@ The part in the command *-H "Authorization: Bearer ${EXEC_PRODUCER_TOKEN}"* need
     "success": true
   }
 
-- Get movies with details of cast, release date
-  Request:
-  curl --request GET 'http://127.0.0.1:5000/moviecast'
-  Response:
-  {
-  "movie_actor_list": [
-    {
-      "Actors": "Amitabh, Aamir", 
-      "Release Date": "Sunday 05. February 1978", 
-      "Title": "Great Escape"
-    }, 
-    {
-      "Actors": "Aamir", 
-      "Release Date": "Saturday 02. January 1988", 
-      "Title": "Superman"
-    }
-  ], 
-  "success": true
-  }
+Support for pagination for movies:
 
-Support for pagination:
-
-$ curl --request GET 'http://127.0.0.1:5000/movies?page=1'
-{
-  "movies": {
-    "27": {
-      "release_date": "Tuesday 08. June 1999", 
-      "title": "GCMail"
-    }, 
-    "28": {
-      "release_date": "Tuesday 08. June 1999", 
-      "title": "CalCMail"
-    }, 
-    "29": {
-      "release_date": "Tuesday 08. June 1999", 
-      "title": "GelCMail"
-    }, 
-    "30": {
-      "release_date": "Tuesday 08. June 1999", 
-      "title": "GelCCCMail"
-    }, 
-    "35": {
-      "release_date": "Tuesday 02. February 2010", 
-      "title": "Best"
-    }
-  }, 
-  "success": true
-}
 (env) $ curl --request GET 'http://127.0.0.1:5000/movies?page=2'
 {
   "movies": {
@@ -441,138 +407,28 @@ $ curl --request GET 'http://127.0.0.1:5000/movies?page=1'
   "success": true
 }
 
-- Delete actor with deletion of corresponding items in moviecast table:
-  Request-response:$ curl --request GET 'http://127.0.0.1:5000/moviecast'
+- Get moviecasts or movies with details of cast, actors, release date
+  Request:
+  curl --request GET 'http://127.0.0.1:5000/moviecast'
+  Response:
   {
-    "movie_actor_list": [
-      {
-        "Actors": "Amitabh, Aamir, Abhishek", 
-        "Release Date": "Sunday 05. February 1978", 
-        "Title": "Great Escape"
-      }, 
-      {
-        "Actors": "Abhishek", 
-        "Release Date": "Thursday 05. April 1979", 
-        "Title": "The Scape"
-      }, 
-      {
-        "Actors": "Abhishek", 
-        "Release Date": "Thursday 05. April 1979", 
-        "Title": "Right"
-      }, 
-      {
-        "Actors": "Aamir", 
-        "Release Date": "Saturday 02. January 1988", 
-        "Title": "Superman"
-      }
-    ], 
-    "success": true
-  }
-
-  Request-response all actors list:
-  $ curl --request GET 'http://127.0.0.1:5000/actors'{
-    "actors": {
-      "1": {
-        "age": 73, 
-        "gender": "Male", 
-        "name": "Amitabh"
-      }, 
-      "2": {
-        "age": 55, 
-        "gender": "Male  ", 
-        "name": "Aamir"
-      }, 
-      "3": {
-        "age": 35, 
-        "gender": "Female", 
-        "name": "Jugnu"
-      }, 
-      "4": {
-        "age": 70, 
-        "gender": "Female", 
-        "name": "Hema"
-      },
-
-  "8": {
-        "age": 33, 
-        "gender": "Male", 
-        "name": "Abhishek"
-      }  
-
-  }, 
-    "success": true
-  }
-
-  Delete request and response:
-  $ curl http://127.0.0.1:5000/actors/8 -X DELETE
-  {
-    "success": true
-  }
-
-  Post delete status of actors and moviecast table:
-
-  $ curl --request GET 'http://127.0.0.1:5000/actors'{
-    "actors": {
-      "1": {
-        "age": 73, 
-        "gender": "Male", 
-        "name": "Amitabh"
-      }, 
-      "2": {
-        "age": 55, 
-        "gender": "Male  ", 
-        "name": "Aamir"
-      }, 
-      "3": {
-        "age": 35, 
-        "gender": "Female", 
-        "name": "Jugnu"
-      }, 
-      "4": {
-        "age": 70, 
-        "gender": "Female", 
-        "name": "Hema"
-      }
+  "movie_actor_list": [
+    {
+      "Actors": "Amitabh, Aamir", 
+      "Release Date": "Sunday 05. February 1978", 
+      "Title": "Great Escape"
     }, 
-    "success": true
+    {
+      "Actors": "Aamir", 
+      "Release Date": "Saturday 02. January 1988", 
+      "Title": "Superman"
+    }
+  ], 
+  "success": true
   }
 
-  $ curl --request GET 'http://127.0.0.1:5000/moviecast'
-  {
-    "movie_actor_list": [
-      {
-        "Actors": "Amitabh, Aamir", 
-        "Release Date": "Sunday 05. February 1978", 
-        "Title": "Great Escape"
-      }, 
-      {
-        "Actors": "Aamir", 
-        "Release Date": "Saturday 02. January 1988", 
-        "Title": "Superman"
-      }
-    ], 
-    "success": true
-  }
-
-  Pagination support:$ curl --request GET 'http://127.0.0.1:5000/moviecast?page=1'
-  {
-    "movie_actor_list": [
-      {
-        "Actors": "Amitabh, Aamir", 
-        "Release Date": "Sunday 05. February 1978", 
-        "Title": "Great Escape"
-      }, 
-      {
-        "Actors": "Aamir", 
-        "Release Date": "Saturday 02. January 1988", 
-        "Title": "Superman"
-      }
-    ], 
-    "success": true
-  }
-  
 - Add a movie:
-
+  
   $ curl -d '{"title": "Geography","release_date":"2010/02/16"}' -H "Content-Type: application/json" -X POST 127.0.0.1:5000/movies
   {
     "movies": [
@@ -584,8 +440,8 @@ $ curl --request GET 'http://127.0.0.1:5000/movies?page=1'
     ], 
     "success": true
   }
-
-- Movie deletion :
+  
+- Delete a Movie:
 
   $ curl http://127.0.0.1:5000/movies/25 -X DELETE
   {
@@ -602,7 +458,7 @@ $ curl --request GET 'http://127.0.0.1:5000/movies?page=1'
     "success": false
   }
 
-  Effect of delete movie on moviecast:
+  Effect of delete movie on moviecast (see Moviecast in later sections):
 
   
 
@@ -620,7 +476,7 @@ $ curl --request GET 'http://127.0.0.1:5000/movies?page=1'
     "success": true
   }
 
-  Add a moie - actor pair
+  Add a movie - actor pair (for how to add an actor see documentation above)
 
   $ curl -d '{"movie_id":36,"actor_id":2}' -H "Content-Type: application/json" -X POST 127.0.0.1:5000/moviecast
   {
@@ -683,7 +539,7 @@ $ curl --request GET 'http://127.0.0.1:5000/movies?page=1'
     "success": true
   }
 
-- Movie updation: $ curl --request GET 'http://127.0.0.1:5000/movies'
+- Update a Movie: $ curl --request GET 'http://127.0.0.1:5000/movies'
   {
     "movies": {
       "1": {
@@ -782,7 +638,147 @@ $ curl --request GET 'http://127.0.0.1:5000/movies?page=1'
     "success": false
   }
   
-- Add a movie - actor combination to the database:
+- Get a Moviecast & Delete actor with deletion of corresponding items in moviecast table:
+  Request-response:
+  
+  $ curl --request GET 'http://127.0.0.1:5000/moviecast'
+  {
+    "movie_actor_list": [
+      {
+        "Actors": "Amitabh, Aamir, Abhishek", 
+        "Release Date": "Sunday 05. February 1978", 
+        "Title": "Great Escape"
+      }, 
+      {
+      "Actors": "Abhishek", 
+        "Release Date": "Thursday 05. April 1979", 
+        "Title": "The Scape"
+      }, 
+      {
+        "Actors": "Abhishek", 
+        "Release Date": "Thursday 05. April 1979", 
+        "Title": "Right"
+      }, 
+      {
+        "Actors": "Aamir", 
+        "Release Date": "Saturday 02. January 1988", 
+        "Title": "Superman"
+      }
+    ], 
+    "success": true
+  }
+  
+  Request-response all actors list:
+  $ curl --request GET 'http://127.0.0.1:5000/actors'
+  
+  {
+    "actors": {
+      "1": {
+        "age": 73, 
+        "gender": "Male", 
+        "name": "Amitabh"
+      }, 
+      "2": {
+        "age": 55, 
+        "gender": "Male  ", 
+        "name": "Aamir"
+      }, 
+      "3": {
+        "age": 35, 
+        "gender": "Female", 
+        "name": "Jugnu"
+      }, 
+      "4": {
+        "age": 70, 
+        "gender": "Female", 
+        "name": "Hema"
+      },
+  
+  "8": {
+        "age": 33, 
+        "gender": "Male", 
+        "name": "Abhishek"
+      }  
+  
+  }, 
+    "success": true
+  }
+  
+  Delete actor request and response:
+  $ curl http://127.0.0.1:5000/actors/8 -X DELETE
+  {
+    "success": true
+  }
+  
+  Post delete status of actors and moviecast table:
+  
+  $ curl --request GET 'http://127.0.0.1:5000/actors'
+  
+  
+  
+  {
+    "actors": {
+      "1": {
+        "age": 73, 
+        "gender": "Male", 
+        "name": "Amitabh"
+      }, 
+      "2": {
+        "age": 55, 
+        "gender": "Male  ", 
+        "name": "Aamir"
+      }, 
+      "3": {
+        "age": 35, 
+        "gender": "Female", 
+        "name": "Jugnu"
+      }, 
+      "4": {
+        "age": 70, 
+        "gender": "Female", 
+        "name": "Hema"
+      }
+    }, 
+    "success": true
+  }
+  
+  $ curl --request GET 'http://127.0.0.1:5000/moviecast'
+  {
+    "movie_actor_list": [
+      {
+        "Actors": "Amitabh, Aamir", 
+        "Release Date": "Sunday 05. February 1978", 
+        "Title": "Great Escape"
+      }, 
+      {
+        "Actors": "Aamir", 
+        "Release Date": "Saturday 02. January 1988", 
+        "Title": "Superman"
+      }
+    ], 
+    "success": true
+  }
+  
+  Pagination support:$ curl --request GET 'http://127.0.0.1:5000/moviecast?page=1'
+  {
+    "movie_actor_list": [
+      {
+        "Actors": "Amitabh, Aamir", 
+        "Release Date": "Sunday 05. February 1978", 
+        "Title": "Great Escape"
+      }, 
+      {
+        "Actors": "Aamir", 
+        "Release Date": "Saturday 02. January 1988", 
+        "Title": "Superman"
+      }
+    ], 
+    "success": true
+  }
+  
+  
+  
+- Add a moviecast : movie - actor combination to the database:
   $ curl -d '{"movie_id":"34","actor_id":"13"}' -H "Content-Type: application/json" -X POST 127.0.0.1:5000/moviecast
   {
     "moviecast": [
@@ -803,32 +799,19 @@ $ curl --request GET 'http://127.0.0.1:5000/movies?page=1'
       {
         "Actors": "Amitabh, Aamir", 
         "Release Date": "Sunday 05. February 1978", 
-        "Title": "Great Escape", 
-        "actor_ids": [
-          1, 
-          2
-        ], 
-        "movie_id": 1
+        "Title": "Great Escape"
       }, 
       {
         "Actors": "Aamir", 
         "Release Date": "Saturday 02. January 1988", 
-        "Title": "Superman", 
-        "actor_ids": [
-          2
-        ], 
-        "movie_id": 4
+        "Title": "Superman"
       }, 
       {
         "Actors": "Ginger, Amitabh", 
         "Release Date": "Tuesday 08. June 1999", 
-        "Title": "Jojo11", 
-        "actor_ids": [
-          13, 
-          1
-        ], 
-        "movie_id": 34
-      }
+        "Title": "Jojo11"
+  
+  ​    }
     ], 
     "success": true
   }
@@ -836,56 +819,44 @@ $ curl --request GET 'http://127.0.0.1:5000/movies?page=1'
   {
     "success": true
   }
-
+  
   $ curl --request GET 'http://127.0.0.1:5000/moviecast'
   {
     "movie_actor_list": [
       {
         "Actors": "Amitabh, Aamir", 
         "Release Date": "Sunday 05. February 1978", 
-        "Title": "Great Escape", 
-        "actor_ids": [
-          1, 
-          2
-        ], 
-        "movie_id": 1
+        "Title": "Great Escape"
       }, 
       {
         "Actors": "Aamir", 
         "Release Date": "Saturday 02. January 1988", 
-        "Title": "Superman", 
-        "actor_ids": [
-          2
-        ], 
-        "movie_id": 4
-      }, 
-      {
+        "Title": "Superman"
+    {
         "Actors": "Amitabh", 
         "Release Date": "Tuesday 08. June 1999", 
-        "Title": "Jojo11", 
-        "actor_ids": [
-          1
-        ], 
-        "movie_id": 34
-      }
+        "Title": "Jojo11"
+  
+  ​    }
     ], 
     "success": true
   }
-
+  
   Trying to delete an actor-movie combination that does not exist: 
-
+  
   $ curl -d '{"movie_id":34,"actor_id":13}' -H "Content-Type: application/json" -X DELETE 127.0.0.1:5000/moviecast
   {
     "error": 404, 
     "message": "resource not found", 
     "success": false
   }
-
+  
+  
   
 
-  **Error Conditions:**
+**Error Conditions:**
 
-
+Most error conditions are already covered above, here are a few more:
 
 Trying to delete an actor ID which does not exist:
 $ curl http://127.0.0.1:5000/actors/8 -X DELETE
@@ -904,19 +875,13 @@ curl -d '{"name":"Abhishek","age":"33", "gender":"Male"}' -H "Content-Type: appl
 
 
 
-Adding permissions movicast add/insert: 
+#### Notes for running the app locally
 
-$ curl --request POST -d '{"actor_id":3, "movie_id":4}' -H "Content-Type: application/json" http://127.0.0.1:5000/moviecast -H "Authorization: Bearer ${EXEC_PRODUCER_TOKEN}"
-{
-  "moviecast": [
-    {
-      "artist_id": 3, 
-      "id": 26, 
-      "movie_id": 4
-    }
-  ], 
-  "success": true
-}
+The file setup.sh mainly contains values like Auth0 parameters, JWT keys, logging level, deployment mode (DEPLOY_MODE) which decides whether the app runs in dev mode (local postgres database) OR uses the remote Heroku database among others.
 
 
+
+### Tests
+
+The tests to make sure everything is in order are in the files test_movies.py (for locally hosted setup) & test_movies_heroku.py (for Heroku hosted setup) 
 

@@ -37,7 +37,7 @@ def paginate_movies(request, movies):
 
 
 def create_app(test_config=None):
-  # create and configure the apapp = Flask(__name__)
+  # create and configure the app
   app = Flask(__name__)
   setup_db(app)
   CORS(app)
@@ -158,41 +158,6 @@ def create_app(test_config=None):
       'movies': movie_json
     })
 
-  # @app.route('/movies', methods=['POST'])
-  # @requires_auth("post:movies")
-  # def add_movie(payload):
-  #   body_json = request.get_json()
-  #   app.logger.debug("Got request", body_json)
-  #   errno = 0
-    
-  #   try:
-  #     if request.is_json:
-  #       print("is json")
-  #       data = request.get_json()
-  #       logger.debug("type of data {}".format(type(data))) # type dict
-  #       logger.debug("data as string {}".format(json.dumps(data)))
-  #       logger.debug ("keys {}".format(json.dumps(data.keys())))
-  #     return jsonify(message='success')
-  #     # if "title" not in req_data_dict or "release_date" not in req_data_dict:
-  #     #   errno = 400
-  #     #   abort(errno)
-  #     # title = req_data_dict["title"]
-  #     # release_date = req_data_dict["release_date"]
-  #     # movie = Movie(title=title, release_date=release_date)
-  #     # movie.insert()
-  #     # movie_single = [movie.long()]
-  #     # return jsonify({
-  #     #         'success': True,
-  #     #         'movies': movie_single
-  #     # })
-  #   except Exception as e:
-  #     app.logger.error("insert_movie:Got exception {}".format(e))
-  #     if errno == 0:
-  #       abort(422)
-  #     else:
-  #       abort(errno) 
-
-#Older method works without payload in add_movie parameter and without requires_auth
   @app.route('/movies', methods=['POST'])
   @requires_auth("post:movies")
   def add_movie(payload):
@@ -283,18 +248,19 @@ def create_app(test_config=None):
     page = request.args.get('page',1, type=int)
     start = (page-1) * MOVIECAST_PER_PAGE
     end = start + MOVIECAST_PER_PAGE
-    moviecast = mc_list_full[start:end]
+    # moviecast = mc_list_full[start:end]
+    moviecast = mc_list_full
 
     if len(moviecast) == 0:
       abort(404)
-
 
 
     movie_num = 0
     artistid_list = []
     movie_and_cast = []
     movie_details = {}
-    for mc in moviecast:
+    
+    for mc in moviecast: 
       app.logger.debug("Got mc:{}".format(mc))
       if movie_num != mc.movie_id:
         # Get movie title
@@ -325,9 +291,12 @@ def create_app(test_config=None):
       
     app.logger.debug("Got movie and actor list:{}".format(movie_and_cast))
 
+    movie_and_cast_clipped = movie_and_cast[start:end]
+    if len(movie_and_cast_clipped) == 0:
+      abort(404)
     return jsonify({
       "success": True,
-      "movie_actor_list" : movie_and_cast
+      "movie_actor_list" : movie_and_cast_clipped
     })
   
   @app.route('/moviecast', methods=['POST'])
@@ -366,6 +335,7 @@ def create_app(test_config=None):
       else:
         abort(errno) 
 
+#Not required right now, may move this out in later release TBD
   # @app.route('/moviecast/<mc_id>', methods=['PATCH'])
   # def update_moviecast(mc_id):
   #   app.logger.debug("Moviecast id {}, data {}".format(mc_id, json.loads(request.data)))
@@ -549,8 +519,6 @@ if not app.debug:
   root.addHandler(sh)
   app.logger = root
   logger = app.logger
-
-
 else:
   root = logging.getLogger()
   LOG_LEVEL = os.environ.get('LOG_LEVEL')
