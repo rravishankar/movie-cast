@@ -879,7 +879,7 @@ curl -d '{"name":"Abhishek","age":"33", "gender":"Male"}' -H "Content-Type: appl
 
 The file setup.sh contains environment variables which are values for Auth0 parameters, JWT keys, logging level, deployment mode (DEPLOY_MODE) which decides whether the app runs in dev mode (local postgres database) OR uses the remote Heroku database among others.
 
-For getting the locally hosted app to use the local database, set the DEPLOY_MODE environment variable to "dev" (need to have local Postgres database setup & update the MOVIE_DB_USER and MOVIE_DB_PASSWORD to reflect the database details, the app assumes Postgres runs on port 5432) and for remote database use "prod". Currently it's set to "dev", but the Heroku hosted version has it as "prod".
+For getting the locally hosted app to use the local database, set the DEPLOY_MODE environment variable to "dev" (need to have local Postgres database setup & update the MOVIE_DB_USER and MOVIE_DB_PASSWORD to reflect the database details, the app assumes Postgres runs on port 5432) and for remote Heroku database use "prod". 
 
 requirements.txt lists the Python dependencies that need to be installed to make the project work. Currently this has been tested with Python 3.8.2
 
@@ -895,11 +895,13 @@ python manage.py db upgrade
 
 For running the app on Heroku, the Proc file describes the command to run the app on the Heroku server. 
 
+Logging is currently set to DEBUG using the LOG_LEVEL parameter (will be changed later to INFO) ,  Currently the Heroku Postgres database may have many movie/actor entries with same test names in the sample data - these may be deleted.
+
 
 
 ### Tests
 
-The tests make sure that everything is in order. The two tests for testing the app locally and remotely are in the files test_movies.py (for locally hosted setup) & test_movies_heroku.py (for Heroku hosted setup) 
+The tests make sure that everything is in order. The two tests for testing the app locally and remotely are in the files test_movies.py (best used for local database DEPLOY_MODE = "dev", when it is set to use remote database that is DEPLOY_MODE= "prod", it may take a while to complete the tests). For remote database - see DEPLOY_MODE described environment variable described) & test_movies_heroku.py (for testing API's directly Heroku hosted setup) 
 
  **User needs to run command "source setup.sh" (on Linux. If on some other OS, make sure environment variables are set according to this file)  before** 
 
