@@ -879,7 +879,21 @@ curl -d '{"name":"Abhishek","age":"33", "gender":"Male"}' -H "Content-Type: appl
 
 The file setup.sh contains environment variables which are values for Auth0 parameters, JWT keys, logging level, deployment mode (DEPLOY_MODE) which decides whether the app runs in dev mode (local postgres database) OR uses the remote Heroku database among others.
 
-For getting the locally hosted app to use the local database, set the DEPLOY_MODE environment variable to "dev" and for remote database use "prod". Currently it's set to "dev", but the Heroku hosted version has it as "prod".
+For getting the locally hosted app to use the local database, set the DEPLOY_MODE environment variable to "dev" (need to have local Postgres database setup & update the MOVIE_DB_USER and MOVIE_DB_PASSWORD to reflect the database details, the app assumes Postgres runs on port 5432) and for remote database use "prod". Currently it's set to "dev", but the Heroku hosted version has it as "prod".
+
+requirements.txt lists the Python dependencies that need to be installed to make the project work. Currently this has been tested with Python 3.8.2
+
+The app uses Postgres database and the schema_data.sql has the Postgres database schema and some sample entries (currently there are a lot more entries on the Heroku database). Database migrations are managed by running the standard migration commands locally, these have been already run: 
+
+```
+python manage.py db init
+python manage.py db migrate
+python manage.py db upgrade
+```
+
+
+
+For running the app on Heroku, the Proc file describes the command to run the app on the Heroku server. 
 
 
 
