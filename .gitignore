@@ -1,6 +1,7 @@
 env/
 .vscode/
 __pycache__/
+pycodestyle/
 #test.db
 #JWT_Token.txt
 
